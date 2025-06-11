@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Official App.Pro - รับสินค้า</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #00b4db, #38ef7d);
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+    h1 {
+      margin: 0.5rem 0;
+      font-size: 1.2rem;
+      color: #222;
+    }
+    p {
+      font-size: 0.95rem;
+      color: #555;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 1.5rem;
+      background: #38ef7d;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .success {
+      margin-top: 1rem;
+      color: green;
+      font-weight: bold;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Official App.Pro</h1>
+    <p>
+      🎁 <strong>กรอกอีเมลเพื่อยืนยันรับสินค้า</strong><br>
+      ✉️ <em>Enter your email to confirm receipt of your item.</em>
+    </p>
+
+    <form id="customer-form">
+      <input type="email" name="email" placeholder="อีเมลของคุณ / Your Email" required>
+
+      <select name="product" required>
+        <option value="" disabled selected>เลือกรายการสินค้า / Select a product</option>
+        <option>Canva Pro</option>
+        <option>ChatGPT Plus</option>
+        <option>Perplexity Pro</option>
+        <option>Grammarly Premium</option>
+        <option>QuillBot Premium</option>
+        <option>YouTube Premium</option>
+        <option>Netflix Premium</option>
+        <option>HBO Max 4K</option>
+      </select>
+
+      <select name="duration" required>
+        <option value="" disabled selected>ระยะเวลาสินค้า / Product Duration</option>
+        <option value="1">1 เดือน</option>
+        <option value="3">3 เดือน</option>
+        <option value="6">6 เดือน</option>
+        <option value="9">9 เดือน</option>
+        <option value="12">1 ปี</option>
+        <option value="24">2 ปี</option>
+        <option value="lifetime">ตลอดชีพ (ประกันสองปี)</option>
+      </select>
+
+      <button type="submit">ส่ง / Submit</button>
+    </form>
+
+    <div class="success" id="success-message">✅ บันทึกสำเร็จ / Submitted successfully!</div>
+  </div>
+
+  <script>
+    document.getElementById('customer-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const form = e.target;
+
+      // ดึง userId จาก URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const userId = urlParams.get('userId');
+
+      const durationValue = form.duration.value;
+      const today = new Date().toISOString().split('T')[0]; // วันเริ่มใช้
+
+      let expiryDate = '';
+      let durationText = '';
+
+      if (durationValue === 'lifetime') {
+        durationText = 'ตลอดชีพ (ประกันสองปี)';
+        expiryDate = ''; // ไม่ระบุวันหมดอายุ
+      } else {
+        const months = parseInt(durationValue);
+        const future = new Date();
+        future.setMonth(future.getMonth() + months);
+        expiryDate = future.toISOString().split('T')[0];
+        durationText = `${months} เดือน`;
+      }
+
+      const data = {
+        email: form.email.value,
+        product: form.product.value,
+        duration: durationText,
+        startDate: today,
+        expiryDate: expiryDate,
+        userId: userId || "ไม่มี userId"
+      };
+
+      // ✅ Webhook URL ของ Make
+      const webhookUrl = 'https://hook.us2.make.com/291f98gpsnh4g5tgu7hnw67v3e8ce5tj';
+
+      const res = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        document.getElementById('success-message').style.display = 'block';
+        form.reset();
+      } else {
+        alert("❌ ส่งไม่สำเร็จ กรุณาลองใหม่");
+      }
+    });
+  </script>
+
+</body>
+</html>
