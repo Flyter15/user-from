@@ -29,8 +29,21 @@
       font-size: 1.2rem;
       color: #222;
     }
-    p {
+    .admin-warning {
+      background-color: #fff1f1;
+      border-left: 4px solid #ff4d4d;
+      padding: 1rem;
+      margin: 1rem 0 1.5rem 0;
+      border-radius: 8px;
+      text-align: left;
       font-size: 0.95rem;
+    }
+    .admin-warning strong {
+      color: #cc0000;
+    }
+    .admin-warning em {
+      display: block;
+      margin-top: 0.25rem;
       color: #555;
     }
     input, select {
@@ -65,10 +78,11 @@
 
   <div class="container">
     <h1>Official App.Pro</h1>
-    <p>
-      🎁 <strong>กรอกอีเมลเพื่อยืนยันรับสินค้า</strong><br>
-      ✉️ <em>Enter your email to confirm receipt of your item.</em>
-    </p>
+
+    <div class="admin-warning">
+      <strong>🚫 สำหรับแอดมินเท่านั้น</strong> ลูกค้าห้ามกรอกเอง
+      <em>🚫 Admin only. Not for customer use.</em>
+    </div>
 
     <form id="customer-form">
       <input type="email" name="email" placeholder="อีเมลของคุณ / Your Email" required>
@@ -83,6 +97,7 @@
         <option>YouTube Premium</option>
         <option>Netflix Premium</option>
         <option>HBO Max 4K</option>
+        <option>อื่นๆ / Others</option>
       </select>
 
       <select name="duration" required>
@@ -94,6 +109,7 @@
         <option value="12">1 ปี</option>
         <option value="24">2 ปี</option>
         <option value="lifetime">ตลอดชีพ (ประกันสองปี)</option>
+        <option value="other">อื่นๆ / Others</option>
       </select>
 
       <button type="submit">ส่ง / Submit</button>
@@ -107,19 +123,21 @@
       e.preventDefault();
       const form = e.target;
 
-      // ดึง userId จาก URL
       const urlParams = new URLSearchParams(window.location.search);
       const userId = urlParams.get('userId');
 
       const durationValue = form.duration.value;
-      const today = new Date().toISOString().split('T')[0]; // วันเริ่มใช้
+      const today = new Date().toISOString().split('T')[0];
 
       let expiryDate = '';
       let durationText = '';
 
       if (durationValue === 'lifetime') {
         durationText = 'ตลอดชีพ (ประกันสองปี)';
-        expiryDate = ''; // ไม่ระบุวันหมดอายุ
+        expiryDate = '';
+      } else if (durationValue === 'other') {
+        durationText = 'อื่นๆ / Others';
+        expiryDate = '';
       } else {
         const months = parseInt(durationValue);
         const future = new Date();
@@ -137,7 +155,6 @@
         userId: userId || "ไม่มี userId"
       };
 
-      // ✅ Webhook URL ของ Make
       const webhookUrl = 'https://hook.us2.make.com/291f98gpsnh4g5tgu7hnw67v3e8ce5tj';
 
       const res = await fetch(webhookUrl, {
