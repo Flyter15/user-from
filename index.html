@@ -97,10 +97,9 @@
         <option>YouTube Premium</option>
         <option>Netflix Premium</option>
         <option>HBO Max 4K</option>
-        <option>อื่นๆ / Others</option>
       </select>
 
-      <select name="duration" required>
+      <select name="duration" id="duration">
         <option value="" disabled selected>ระยะเวลาสินค้า / Product Duration</option>
         <option value="1">1 เดือน</option>
         <option value="3">3 เดือน</option>
@@ -109,8 +108,9 @@
         <option value="12">1 ปี</option>
         <option value="24">2 ปี</option>
         <option value="lifetime">ตลอดชีพ (ประกันสองปี)</option>
-        <option value="other">อื่นๆ / Others</option>
       </select>
+
+      <input type="date" id="expiryDateManual" name="expiryDateManual" placeholder="วันหมดอายุ (ใส่เอง)" />
 
       <button type="submit">ส่ง / Submit</button>
     </form>
@@ -126,32 +126,40 @@
       const urlParams = new URLSearchParams(window.location.search);
       const userId = urlParams.get('userId');
 
+      const email = form.email.value;
+      const product = form.product.value;
       const durationValue = form.duration.value;
+      const manualExpiryDate = form.expiryDateManual.value;
       const today = new Date().toISOString().split('T')[0];
 
       let expiryDate = '';
       let durationText = '';
 
+      if (!durationValue && !manualExpiryDate) {
+        alert("กรุณาเลือกระยะเวลาหรือระบุวันหมดอายุอย่างใดอย่างหนึ่ง");
+        return;
+      }
+
       if (durationValue === 'lifetime') {
         durationText = 'ตลอดชีพ (ประกันสองปี)';
         expiryDate = '';
-      } else if (durationValue === 'other') {
-        durationText = 'อื่นๆ / Others';
-        expiryDate = '';
-      } else {
+      } else if (durationValue) {
         const months = parseInt(durationValue);
         const future = new Date();
         future.setMonth(future.getMonth() + months);
         expiryDate = future.toISOString().split('T')[0];
         durationText = `${months} เดือน`;
+      } else if (manualExpiryDate) {
+        durationText = 'กำหนดเอง';
+        expiryDate = manualExpiryDate;
       }
 
       const data = {
-        email: form.email.value,
-        product: form.product.value,
+        email,
+        product,
         duration: durationText,
         startDate: today,
-        expiryDate: expiryDate,
+        expiryDate,
         userId: userId || "ไม่มี userId"
       };
 
@@ -166,6 +174,9 @@
       if (res.ok) {
         document.getElementById('success-message').style.display = 'block';
         form.reset();
+        setTimeout(() => {
+          document.getElementById('success-message').style.display = 'none';
+        }, 4000);
       } else {
         alert("❌ ส่งไม่สำเร็จ กรุณาลองใหม่");
       }
