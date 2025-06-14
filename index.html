@@ -1,36 +1,39 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Official App.Pro - รับสินค้า</title>
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #00b4db, #38ef7d);
-      color: #333;
+      background: #121212;
+      color: #eee;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
     }
+
     .container {
-      background: white;
+      background: #1e1e1e;
       padding: 2rem;
       border-radius: 16px;
       max-width: 400px;
       width: 90%;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
       text-align: center;
     }
+
     h1 {
       margin: 0.5rem 0;
       font-size: 1.2rem;
-      color: #222;
+      color: #ffffff;
     }
+
     .admin-warning {
-      background-color: #fff1f1;
+      background-color: #2a2a2a;
       border-left: 4px solid #ff4d4d;
       padding: 1rem;
       margin: 1rem 0 1.5rem 0;
@@ -38,27 +41,37 @@
       text-align: left;
       font-size: 0.95rem;
     }
+
     .admin-warning strong {
-      color: #cc0000;
+      color: #ff6b6b;
     }
+
     .admin-warning em {
       display: block;
       margin-top: 0.25rem;
-      color: #555;
+      color: #ffffff;
     }
+
+    .admin-warning em strong {
+      color: #ff6b6b;
+    }
+
     input, select {
       width: 100%;
       padding: 0.75rem;
       margin-top: 1rem;
-      border: 1px solid #ccc;
+      border: 1px solid #444;
       border-radius: 8px;
       font-size: 1rem;
+      background-color: #2c2c2c;
+      color: #fff;
     }
+
     button {
       width: 100%;
       padding: 0.75rem;
       margin-top: 1.5rem;
-      background: #38ef7d;
+      background: #00c853;
       color: white;
       font-size: 1rem;
       font-weight: bold;
@@ -66,9 +79,10 @@
       border-radius: 8px;
       cursor: pointer;
     }
+
     .success {
       margin-top: 1rem;
-      color: green;
+      color: #00e676;
       font-weight: bold;
       display: none;
     }
@@ -81,11 +95,11 @@
 
     <div class="admin-warning">
       <strong>🚫 สำหรับแอดมินเท่านั้น</strong> ลูกค้าห้ามกรอกเอง
-      <em>🚫 Admin only. Not for customer use.</em>
+      <em>🚫 <strong>Admin only.</strong> Not for customer use.</em>
     </div>
 
     <form id="customer-form">
-      <input type="email" name="email" placeholder="อีเมลของคุณ / Your Email" required>
+      <input type="email" name="email" placeholder="อีเมลของคุณ / Your Email" required />
 
       <select name="product" required>
         <option value="" disabled selected>เลือกรายการสินค้า / Select a product</option>
@@ -119,7 +133,7 @@
   </div>
 
   <script>
-    document.getElementById('customer-form').addEventListener('submit', async function(e) {
+    document.getElementById('customer-form').addEventListener('submit', async function (e) {
       e.preventDefault();
       const form = e.target;
 
@@ -182,6 +196,5 @@
       }
     });
   </script>
-
 </body>
 </html>
